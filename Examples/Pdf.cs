@@ -31,7 +31,7 @@ namespace PuppeteerAzureFunc.Examples
             })) {
                 var page = await browser.NewPageAsync();
 
-                //await page.GoToAsync(url, WaitUntilNavigation.Networkidle0);
+                await page.GoToAsync(url);
                 //await page.SetViewportAsync(new ViewPortOptions { Width = 1920, Height = 1080 });
 
                 var fileName = $"{DateTime.Now.Ticks}.pdf";
