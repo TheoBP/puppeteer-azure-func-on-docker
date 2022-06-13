@@ -29,19 +29,22 @@ namespace PuppeteerAzureFunc.Examples
                 Args = new[] { "--no-sandbox" },
                 Headless = true
             });
+            
+            
             var page = await browser.NewPageAsync();
 
-            await page.GoToAsync(url, WaitUntilNavigation.Networkidle0);
-            await page.SetViewportAsync(new ViewPortOptions { Width = 1920, Height = 1080 });
+            await page.GoToAsync(url);
+            //await page.SetViewportAsync(new ViewPortOptions { Width = 1920, Height = 1080 });
 
             var fileName = $"{DateTime.Now.Ticks}.pdf";
             await page.PdfAsync(fileName);
+            
             await browser.CloseAsync();
 
             var content = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
             File.Delete(fileName);
 
-            return new FileStreamResult(content, "application/octet-stream");
+            return new FileStreamResult(content, "application/pdf");
         }
     }
 }
