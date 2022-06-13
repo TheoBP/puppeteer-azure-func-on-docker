@@ -9,6 +9,7 @@ namespace PuppeteerAzureFunc.Examples
     using Microsoft.Extensions.Logging;
     using PuppeteerSharp;
     using System;
+    using PuppeteerSharp.Media;
 
     public static class Pdf
     {
@@ -23,7 +24,7 @@ namespace PuppeteerAzureFunc.Examples
             if (string.IsNullOrWhiteSpace(url))
                 return new BadRequestObjectResult("Please pass a url on the query string or in the request body");
 
-            await new BrowserFetcher().DownloadAsync(BrowserFetcher.DefaultRevision);
+            await new BrowserFetcher().DownloadAsync(BrowserFetcher.DefaultChromiumRevision);
             var browser = await Puppeteer.LaunchAsync(new LaunchOptions
             {
                 Args = new[] { "--no-sandbox" },
@@ -34,17 +35,21 @@ namespace PuppeteerAzureFunc.Examples
             var page = await browser.NewPageAsync();
 
             await page.GoToAsync(url);
+
+
             //await page.SetViewportAsync(new ViewPortOptions { Width = 1920, Height = 1080 });
 
-            var fileName = $"{DateTime.Now.Ticks}.pdf";
-            await page.PdfAsync(fileName);
+            var stream = await page.PdfStreamAsync(new PdfOptions{
+                Format = PaperFormat.A4,
+                PrintBackground = true
+            });
             
             await browser.CloseAsync();
 
-            var content = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
-            File.Delete(fileName);
+            //var content = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
+            //File.Delete(fileName);
 
-            return new FileStreamResult(content, "application/pdf");
+            return new FileStreamResult(stream, "application/pdf");
         }
     }
 }

@@ -23,7 +23,7 @@ namespace PuppeteerAzureFunc.Examples
             if (string.IsNullOrWhiteSpace(url))
                 return new BadRequestObjectResult("Please pass a url on the query string or in the request body");
 
-            await new BrowserFetcher().DownloadAsync(BrowserFetcher.DefaultRevision);
+            await new BrowserFetcher().DownloadAsync(BrowserFetcher.DefaultChromiumRevision);
             var browser = await Puppeteer.LaunchAsync(new LaunchOptions
             {
                 Args = new[] { "--no-sandbox" },
